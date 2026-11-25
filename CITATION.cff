@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the original Wound_healing_size_tool paper (see references) and this repository."
+title: "Wound Healing Batch: batch scratch-assay quantification for ImageJ/Fiji"
+type: software
+authors:
+  - family-names: Potemkin
+    given-names: Alexey
+repository-code: "https://github.com/LittleIronclad/wound-healing-batch"
+license: MIT
+keywords: [scratch assay, wound healing, cell migration, ImageJ, Fiji, image analysis]
+references:
+  - type: article
+    title: "An image J plugin for the high throughput image analysis of in vitro scratch wound healing assays"
+    authors:
+      - family-names: Suarez-Arnedo
+        given-names: Alejandra
+      - family-names: Torres Figueroa
+        given-names: Felipe
+      - family-names: Clavijo
+        given-names: Camila
+      - family-names: Arbeláez
+        given-names: Pablo
+      - family-names: Cruz
+        given-names: Juan C.
+      - family-names: Muñoz-Camargo
+        given-names: Carolina
+    journal: "PLoS ONE"
+    volume: 15
+    issue: 7
+    start: e0232565
+    year: 2020
+    doi: 10.1371/journal.pone.0232565
