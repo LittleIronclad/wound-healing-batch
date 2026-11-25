@@ -10,7 +10,8 @@
  *     fails when the toolset is installed);
  *   - the stack tool duplicates only the current slice instead of the whole stack;
  *   - guards for images where no wound is detected (empty ROI Manager / no selection);
- *   - edge arrays of unequal length no longer cause an index error.
+ *   - edge arrays of unequal length no longer cause an index error;
+ *   - the options dialog remembers the last values and shares them with Wound_Healing_Batch.ijm.
  * The segmentation and measurement logic is unchanged.
  *
  * Install: Plugins › Macros › Install… → this file. The tools appear in the ImageJ toolbar.
@@ -35,6 +36,10 @@ var diagonal= "No";
 // Options dialog (a function, so it can be called from the tools below)
 function options_dialog()
 {
+    // Start from the values used last time (shared with Wound_Healing_Batch.ijm)
+    filter_radius = parseFloat(call("ij.Prefs.get", "woundbatch.radius", "" + filter_radius));
+    threshold = parseFloat(call("ij.Prefs.get", "woundbatch.threshold", "" + threshold));
+    sat_pix = parseFloat(call("ij.Prefs.get", "woundbatch.saturated", "" + sat_pix));
     set_scale_global = newArray("Yes","No");
     is_diagonal = newArray("Yes","No");
     Dialog.create("Wound healing size options");
@@ -53,6 +58,12 @@ function options_dialog()
     scale = Dialog.getChoice();
     diagonal = Dialog.getChoice();
     scale_fixed(scale);
+
+    // Remember the tuned values: Wound_Healing_Batch.ijm offers them as defaults
+    call("ij.Prefs.set", "woundbatch.radius", "" + filter_radius);
+    call("ij.Prefs.set", "woundbatch.threshold", "" + threshold);
+    call("ij.Prefs.set", "woundbatch.saturated", "" + sat_pix);
+    call("ij.Prefs.set", "woundbatch.diagonal", diagonal);
 }
 
 function edge_min_coordinates(arr_ROI) 

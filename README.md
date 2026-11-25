@@ -29,6 +29,19 @@ The original plugin analyses one image (or one stack) at a time. Results are cop
 | [`macros/Batch_Enhance_Contrast.ijm`](macros/Batch_Enhance_Contrast.ijm) | Contrast enhancement for a whole folder tree, keeping the folder structure (for figures) |
 | [`scripts/wound_closure.py`](scripts/wound_closure.py) | % wound closure and migration rate per position, condition and time point, with a plot |
 
+## Recommended workflow: tune on one image, then run the batch
+
+The parameters depend strongly on the microscope, magnification and image format. Defaults that work for one set of images can miss the wound completely in another. So:
+
+1. **Tune on a single image.** Install `Wound_healing_size_tool_fixed.ijm` (**Plugins › Macros › Install…**), open one representative image and click the *Wound healing size* tool in the toolbar. Change the threshold and radius until the cyan outline follows the wound edge. Repeat on 2–3 images from different conditions and time points, including the latest, nearly closed ones.
+2. **Run the batch with the tuned values.** The values from step 1 are remembered and appear as defaults in the batch dialog (shared through the ImageJ preferences).
+3. **Check the QC images** in `results/qc/`, especially wells where the wound is almost closed.
+
+| Example settings | Variance radius | Threshold | Saturated pixels |
+|---|---:|---:|---:|
+| Original tool (defaults) | 20 | 100 | 0.001 |
+| Our IncuCyte phase-contrast JPEG exports | 0.05 | 100 | 0.001 |
+
 ## Quick start
 
 1. Arrange the images, e.g. one sub-folder per condition:
@@ -40,7 +53,7 @@ The original plugin analyses one image (or one stack) at a time. Results are cop
    ```
    Images directly inside `scratch_assay/` are processed too.
 2. In Fiji: **Plugins › Macros › Run…** → `Wound_Healing_Batch.ijm`.
-3. Choose the input and output folders and the parameters (below) → **OK**.
+3. Choose the input and output folders. The parameters default to the values tuned in the interactive tool. → **OK**.
 4. Open `qc/` and check that the cyan outline follows the wound in every image.
 
 **Output**
@@ -70,7 +83,7 @@ The definitions follow the original manual.
 | Scratch is diagonal? | Corrects the mean width for the inclination of the scratch | "Yes" unless the scratch is perfectly vertical |
 | Pixel size (µm/px) | Overrides the image calibration; 0 = use the calibration in the file | Needed for JPEG/PNG exports without metadata |
 
-The scratch is expected to run **vertically**. Rotate horizontal scratches first, for example with the Rotate tool in `Wound_healing_size_tool_fixed.ijm`. A good workflow is to tune the parameters on 3–5 representative images with the interactive tool, then run the batch macro.
+The scratch is expected to run **vertically**. Rotate horizontal scratches first, for example with the Rotate tool in `Wound_healing_size_tool_fixed.ijm`.
 
 ## Wound-closure kinetics
 
@@ -99,6 +112,7 @@ Use `[…]` for paths with spaces. The ROI Manager needs a display; on a server 
 - Batch processing of a folder and its sub-folders in one run, with per-folder and combined CSV export.
 - QC overlay images, parameter log, optional fixed pixel size, headless mode.
 - Skips hidden and system files (e.g. macOS `._*`) that used to break batch runs.
+- Tuned parameters are remembered and shared between the interactive tool and the batch macro.
 - Interactive toolset: the options dialog is a callable function; the stack tool duplicates only the current slice; guards for images without a detectable wound; robust handling of edge arrays of unequal length.
 - The segmentation (contrast → variance filter → threshold → fill holes → largest particle) and the width / diagonal-correction calculations are unchanged.
 

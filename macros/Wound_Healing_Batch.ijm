@@ -22,7 +22,7 @@
  *        <output>/qc/<sub-folder>/<image>.jpg (original image with the detected wound outlined)
  */
 
-// ── Defaults (the same as in the original tool) ──────────────────────────────
+// ── Defaults (the same as in the original tool; tune them for your images!) ──
 // Declared with "var" so that the functions below can see them.
 var radius = 20;          // variance filter radius (px)
 var threshold = 100;      // variance threshold: pixels below it count as "empty" (wound)
@@ -31,6 +31,15 @@ var minSize = 100;        // minimum particle size (px²)
 var diagonal = "Yes";     // correct the mean width for scratch inclination
 var pixelSize = 0;        // µm per pixel; 0 = use the calibration stored in each image
 var saveQC = true;        // save overlay images for visual checking
+
+// Values tuned with the interactive tool (Wound_healing_size_tool_fixed.ijm) or used in the last
+// batch run are remembered in the ImageJ preferences and offered as defaults.
+radius    = parseFloat(call("ij.Prefs.get", "woundbatch.radius", "" + radius));
+threshold = parseFloat(call("ij.Prefs.get", "woundbatch.threshold", "" + threshold));
+saturated = parseFloat(call("ij.Prefs.get", "woundbatch.saturated", "" + saturated));
+minSize   = parseFloat(call("ij.Prefs.get", "woundbatch.min_size", "" + minSize));
+diagonal  = call("ij.Prefs.get", "woundbatch.diagonal", diagonal);
+pixelSize = parseFloat(call("ij.Prefs.get", "woundbatch.pixel_size", "" + pixelSize));
 
 // ── Parameters: from the command line (headless) or from a dialog ────────────
 args = getArgument();
@@ -68,6 +77,12 @@ if (args != "") {
     diagonal  = Dialog.getChoice();
     pixelSize = Dialog.getNumber();
     saveQC    = Dialog.getCheckbox();
+    call("ij.Prefs.set", "woundbatch.radius", "" + radius);
+    call("ij.Prefs.set", "woundbatch.threshold", "" + threshold);
+    call("ij.Prefs.set", "woundbatch.saturated", "" + saturated);
+    call("ij.Prefs.set", "woundbatch.min_size", "" + minSize);
+    call("ij.Prefs.set", "woundbatch.diagonal", diagonal);
+    call("ij.Prefs.set", "woundbatch.pixel_size", "" + pixelSize);
 }
 inputDir = withSlash(inputDir);
 outputDir = withSlash(outputDir);
